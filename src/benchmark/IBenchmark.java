@@ -1,4 +1,4 @@
-package bench;
+package benchmark;
 
 interface IBenchmark{
     void run() ;

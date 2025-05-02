@@ -1,4 +1,4 @@
-package bench;
+package benchmark;
 
 public class SleepBenchmark implements IBenchmark {
     private long sleepDurationMs;
