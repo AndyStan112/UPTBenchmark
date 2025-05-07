@@ -1,4 +1,6 @@
-package benchmark;
+package benchmark.example;
+
+import benchmark.IBenchmark;
 
 public class SleepBenchmark implements IBenchmark {
     private long sleepDurationMs;
@@ -35,5 +37,10 @@ public class SleepBenchmark implements IBenchmark {
     @Override
     public void cancel() {
         cancelled = true;
+    }
+
+    @Override
+    public void warmup() {
+
     }
 }

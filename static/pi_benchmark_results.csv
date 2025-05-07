@@ -1,0 +1,17 @@
+Digits,AverageTimeMillis,Algorithm
+50,4105620,GaussLegendre
+100,4031748,GaussLegendre
+200,10005277,GaussLegendre
+500,55503852,GaussLegendre
+1000,290387458,GaussLegendre
+2000,1372881738,GaussLegendre
+5000,15381641818,GaussLegendre
+10000,107218797807,GaussLegendre
+50,8923674,Chudnovsky
+100,185071,Chudnovsky
+200,460224,Chudnovsky
+500,4688462,Chudnovsky
+1000,21225343,Chudnovsky
+2000,109127599,Chudnovsky
+5000,1188074952,Chudnovsky
+10000,7929203770,Chudnovsky

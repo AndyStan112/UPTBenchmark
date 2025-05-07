@@ -1,5 +1,6 @@
-package benchmark;
+package benchmark.example;
 
+import benchmark.IBenchmark;
 import logging.ConsoleLogger;
 import logging.ILogger;
 import timing.ITimer;

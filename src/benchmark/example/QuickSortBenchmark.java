@@ -1,4 +1,6 @@
-package benchmark;
+package benchmark.example;
+
+import benchmark.IBenchmark;
 
 import java.util.Random;
 
@@ -67,5 +69,10 @@ public class QuickSortBenchmark implements IBenchmark {
     @Override
     public void cancel() {
         cancelled = true;
+    }
+
+    @Override
+    public void warmup() {
+
     }
 }
