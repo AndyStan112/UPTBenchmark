@@ -1,6 +1,7 @@
-package benchmark.cpu;
+package testbench;
 
 import benchmark.IBenchmark;
+import benchmark.cpu.CPUDigitsOfPi;
 import timing.ITimer;
 import timing.Timer;
 
