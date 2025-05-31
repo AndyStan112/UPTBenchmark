@@ -7,11 +7,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-public class FileLogger implements ILogger {
-    private final BufferedWriter writer;
+public class FileLogger implements ILogger, AutoCloseable {
+    protected final BufferedWriter writer;
 
     public FileLogger(String filename) throws IOException {
-        writer = new BufferedWriter(new FileWriter(filename, true));
+        this.writer = new BufferedWriter(new FileWriter(filename, true));
     }
 
     @Override
