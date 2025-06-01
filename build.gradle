@@ -1,0 +1,32 @@
+plugins {
+    id 'java'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_23
+    targetCompatibility = JavaVersion.VERSION_23
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.github.oshi:oshi-core:6.8.2'
+    implementation 'net.java.dev.jna:jna:5.13.0'
+    implementation 'net.java.dev.jna:jna-platform:5.13.0'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src']
+        }
+    }
+}
+
+task runTestbench(type: JavaExec) {
+    description = 'Run the Testbench class'
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'testbench.Testbench'
+}
