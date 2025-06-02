@@ -1,34 +1,58 @@
 package testbench;
 
-import logging.ConsoleLogger;
-import logging.ILogger;
-import java.util.concurrent.TimeUnit;
-import timing.ITimer;
-import timing.Timer;
 import benchmark.cpu.CPUFixedVsFloatingPoint;
 import benchmark.cpu.NumberRepresentation;
+import logging.CSVLogger;
+import timing.ITimer;
+import timing.Timer;
+
+import java.io.IOException;
+import java.net.InetAddress;
 
 public class TestCPUFixedVsFloatingPoint {
-
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         ITimer timer = new Timer();
-        ILogger log = new ConsoleLogger();
-        TimeUnit unit = TimeUnit.MILLISECONDS;
+        String device = "Unknown";
+        try {
+            device = InetAddress.getLocalHost().getHostName();
+        } catch (Exception ignored) {}
 
+        String path = "static/fixed_vs_float.csv";
+        String[] header = {
+                "Device", "Mode", "Instructions", "TimeMS"
+        };
+        CSVLogger logger = new CSVLogger(path, header);
 
-        CPUFixedVsFloatingPoint bench = new CPUFixedVsFloatingPoint();
-        bench.init(10_000_000);
-        bench.warmup();
+        long[] sizes = {
+                500_000L,
+                1_000_000L,
+                5_000_000L,
+                10_000_000L,
+                50_000_000L,
+                100_000_000L
+        };
 
-        timer.start();
-      //  bench.run(NumberRepresentation.FIXED);
-      bench.run(NumberRepresentation.FLOATING);
-        long t = timer.stop();
+        for (long size : sizes) {
+            for (NumberRepresentation mode : NumberRepresentation.values()) {
+                CPUFixedVsFloatingPoint bench = new CPUFixedVsFloatingPoint();
+                bench.init((int) size);
+                bench.warmup();
 
-        log.writeTime("Time ", t, unit);
-        log.write("Result is", bench.getResult());
+                timer.start();
+                bench.run(mode);
+                long timeMs = timer.stop() / 1_000_000;
 
-        bench.clean();
-        log.close();
+                logger.writeRow(
+                        device,
+                        mode.name(),
+                        String.valueOf(size),
+                        String.valueOf(timeMs)
+                );
+
+                bench.clean();
+            }
+        }
+
+        logger.close();
     }
 }
