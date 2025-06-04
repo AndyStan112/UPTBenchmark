@@ -2,3 +2,13 @@ https://github.com/AndyStan112/UPTBenchmark
 Team members:
 Stanica Andrei-Claudiu
 Martinescu Miriam-Iseline
+
+To benchmark yor device run :
+.\gradlew runAllBenchmarks
+or on windows:
+.\gradlew.exe runAllBenchmarks
+
+Python and java need to be installed.
+Find benchmarking results in the static folder as both csvs and plot images.
+Devices are identified by hosntname.
+

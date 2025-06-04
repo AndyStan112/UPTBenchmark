@@ -24,9 +24,83 @@ sourceSets {
         }
     }
 }
+task runAllBenchmarks {
+    group = "benchmarking"
+    description = "Runs all Java TestBench classes and Python plotting scripts using a virtualenv"
+    dependsOn 'classes'
 
-task runTestbench(type: JavaExec) {
-    description = 'Run the Testbench class'
-    classpath = sourceSets.main.runtimeClasspath
-    main = 'testbench.Testbench'
+    doLast {
+        def testbenchDir = file("src/testbench")
+        def pythonScripts = fileTree("scripts").matching {
+            include "*.py"
+        }
+
+        def pythonCmd = ["python3", "python", "py"].find { cmd ->
+            try {
+                def proc = new ByteArrayOutputStream()
+                exec {
+                    commandLine cmd, "--version"
+                    standardOutput = proc
+                    errorOutput = proc
+                    ignoreExitValue = true
+                }
+                return proc.toString().contains("Python")
+            } catch (Exception e) {
+                return false
+            }
+        }
+
+        if (!pythonCmd) {
+            throw new GradleException("No Python interpreter found (tried: python3, python, py). Please install python and/or add it to PATH")
+        }
+
+        println "Using system Python: $pythonCmd"
+
+        def venvDir = file(".venv")
+        def venvPython = System.getProperty("os.name").toLowerCase().contains("windows") ?
+                new File(venvDir, "Scripts/python.exe") :
+                new File(venvDir, "bin/python")
+
+        if (!venvPython.exists()) {
+            println "Creating virtual environment in .venv"
+            exec {
+                commandLine pythonCmd, "-m", "venv", venvDir.absolutePath
+            }
+        } else {
+            println "Virtualenv already exists"
+        }
+
+        def requirements = file("scripts/requirements.txt")
+        if (requirements.exists()) {
+            println "Installing Python dependencies into virtualenv"
+            exec {
+                commandLine venvPython.absolutePath, "-m", "pip", "install", "-r", requirements.absolutePath
+            }
+        } else {
+            println "No requirements.txt found at scripts/requirements.txt – skipping pip install"
+        }
+
+        Testbenches
+        testbenchDir.eachFileMatch(~/.+\.java/) { file ->
+            def className = "testbench.${file.name.replace('.java', '')}"
+            println "Running Java class: $className"
+            javaexec {
+                classpath = sourceSets.main.runtimeClasspath
+                mainClass = className
+            }
+        }
+
+        //Python scripts
+        pythonScripts.each { script ->
+            println "Running Python script: ${script.name}"
+            exec {
+                commandLine venvPython.absolutePath, script.absolutePath
+                workingDir = script.parentFile
+                standardOutput = System.out
+                errorOutput = System.err
+            }
+
+        }
+    }
 }
+
