@@ -165,19 +165,16 @@ public class TestVirtualMemory {
 
 
             String outCsv = String.format("static/ram/csv/virtual_memory_usage_%s_%d.csv", mode, fileSizeMB);
-            try (PrintWriter pw = new PrintWriter(new FileWriter(outCsv))) {
-                pw.println("Timestamp,CPU_Percent,RAM_Used_Percent,Disk_Util_Percent,Mode,Device");
+            try (CSVLogger logger = new CSVLogger(outCsv, new String[]{
+                    "Timestamp", "CPU_Percent", "RAM_Used_Percent", "Disk_Util_Percent", "Mode", "Device"
+            })) {
                 synchronized (samples) {
                     for (Sample s : samples) {
-                        pw.printf(
-                                "%s,%.2f,%.2f,%.2f,%s,%s%n",
-                                s.timestamp,
-                                s.cpuPercent,
-                                s.ramPercent,
-                                s.diskPercent,
-                                s.mode,
-                                s.device
-                        );
+                        logger.writeRow(s.timestamp,
+                                String.format("%.2f", s.cpuPercent),
+                                String.format("%.2f", s.ramPercent),
+                                String.format("%.2f", s.diskPercent),
+                                s.mode, s.device);
                     }
                 }
             } catch (IOException e) {
