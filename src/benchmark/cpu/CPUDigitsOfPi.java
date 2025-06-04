@@ -10,6 +10,7 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 
 public class CPUDigitsOfPi implements IBenchmark {
+
     private int digits;
     private BigDecimal piResult;
     private boolean cancelled;
